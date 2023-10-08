@@ -1,11 +1,16 @@
-using Mdb.Tatedrez.Data.Model;
-using UnityEngine;
+using JetBrains.Annotations;
+using System;
 
 namespace Mdb.Tatedrez.Presentation.MainGameScreen.UiDisplays
 {
-    public class UnplacedPieceHolderUiDisplay : MonoBehaviour
+    public class UnplacedPieceHolderUiDisplay : PieceHolderUiDisplay
     {
-        [SerializeField] private PieceUiDisplay _piece = default;
+        private Action<UnplacedPieceHolderUiDisplay> _onSelect;
+
+        public void Initialize(Action<UnplacedPieceHolderUiDisplay> onSelect)
+        {
+            _onSelect = onSelect;
+        }
 
         public void Show()
         {
@@ -17,9 +22,12 @@ namespace Mdb.Tatedrez.Presentation.MainGameScreen.UiDisplays
             gameObject.SetActive(false);
         }
 
-        public void Populate(IPiece piece)
+        [UsedImplicitly]
+        public void Select()
         {
-            _piece.Populate(piece);
+            if (_state != PieceHolderState.Selectable) return;
+
+            _onSelect.Invoke(this);
         }
     }
 }
