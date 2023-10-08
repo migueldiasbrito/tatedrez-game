@@ -10,14 +10,16 @@ namespace Mdb.Tatedrez.Presentation.MainGameScreen.UiDisplays
         [SerializeField] private UnplacedPieceHolderUiDisplay[] _unplacedPiecesHolders;
 
         private Action<IPiece> _onPieceSelected;
+        private Action _onPieceDeselected;
 
-        public void Initialize(Action<IPiece> onPieceSelected)
+        public void Initialize(Action<IPiece> onPieceSelected, Action onPieceDeselect)
         {
             _onPieceSelected = onPieceSelected;
+            _onPieceDeselected = onPieceDeselect;
 
-            foreach(UnplacedPieceHolderUiDisplay pieceHolder in _unplacedPiecesHolders)
+            foreach (UnplacedPieceHolderUiDisplay pieceHolder in _unplacedPiecesHolders)
             {
-                pieceHolder.Initialize(OnPieceSelect);
+                pieceHolder.Initialize(OnPieceSelect, OnPieceDeselect);
             }
         }
 
@@ -32,13 +34,18 @@ namespace Mdb.Tatedrez.Presentation.MainGameScreen.UiDisplays
             _onPieceSelected.Invoke(selectedPieceHolder.Piece);
         }
 
+        private void OnPieceDeselect()
+        {
+            _onPieceDeselected.Invoke();
+        }
+
         public void Populate(IList<IPiece> unplacedPieces)
         {
             for (int i = 0; i < _unplacedPiecesHolders.Length; i++)
             {
                 UnplacedPieceHolderUiDisplay unplacedPieceHolder = _unplacedPiecesHolders[i];
 
-                if (unplacedPieces.Count < i) unplacedPieceHolder.Hide();
+                if (unplacedPieces.Count <= i) unplacedPieceHolder.Hide();
                 else
                 {
                     unplacedPieceHolder.Populate(unplacedPieces[i]);

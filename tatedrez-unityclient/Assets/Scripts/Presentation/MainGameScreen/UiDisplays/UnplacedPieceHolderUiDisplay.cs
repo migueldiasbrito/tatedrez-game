@@ -6,10 +6,12 @@ namespace Mdb.Tatedrez.Presentation.MainGameScreen.UiDisplays
     public class UnplacedPieceHolderUiDisplay : PieceHolderUiDisplay
     {
         private Action<UnplacedPieceHolderUiDisplay> _onSelect;
+        private Action _onDeselect;
 
-        public void Initialize(Action<UnplacedPieceHolderUiDisplay> onSelect)
+        public void Initialize(Action<UnplacedPieceHolderUiDisplay> onSelect, Action onDeselect)
         {
             _onSelect = onSelect;
+            _onDeselect = onDeselect;
         }
 
         public void Show()
@@ -25,9 +27,16 @@ namespace Mdb.Tatedrez.Presentation.MainGameScreen.UiDisplays
         [UsedImplicitly]
         public void Select()
         {
-            if (_state != PieceHolderState.Selectable) return;
-
-            _onSelect.Invoke(this);
+            switch (_state)
+            {
+                case PieceHolderState.Selectable:
+                    _onSelect.Invoke(this);
+                    break;
+                case PieceHolderState.Selected:
+                    _onDeselect.Invoke();
+                    SetState(PieceHolderState.Selectable);
+                    break;
+            }
         }
     }
 }
