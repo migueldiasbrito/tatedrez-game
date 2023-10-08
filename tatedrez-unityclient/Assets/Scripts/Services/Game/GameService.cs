@@ -36,6 +36,20 @@ namespace Mdb.Tatedrez.Services.Game
             _model.CurrentPlayer = Random.Range(0, 2) == 0 ? Player.White : Player.Black;
         }
 
+        public void TryMovePiece(int fromRow, int fromColumn, int toRow, int toColumn)
+        {
+            IList<(int, int)> possibleMoves = _model.GetPossibleMovesForPieceAt(fromRow, fromColumn);
+
+            if (!possibleMoves.Contains((toRow, toColumn))) return;
+
+            _model.BoardImplementation[toRow][toColumn] = _model.BoardImplementation[fromRow][fromColumn];
+            _model.BoardImplementation[fromRow][fromColumn] = null;
+
+            _notificationService.Publish(new PieceMovedNotification(fromRow, fromColumn, toRow, toColumn));
+
+            EndPlay();
+        }
+
         public void TryPlacePieceAt(IPiece piece, int row, int column)
         {
             if (!_model.CanPlacePieceAt(row, column)) return;
@@ -56,7 +70,11 @@ namespace Mdb.Tatedrez.Services.Game
         {
             // TODO Check victory condition
 
+
+            Player currentPlayer = _model.CurrentPlayer;
             _model.CurrentPlayer = _model.CurrentPlayer == Player.White ? Player.Black : Player.White;
+
+            if (!_model.CanCurrentPlayerMove()) _model.CurrentPlayer = currentPlayer;
 
             _notificationService.Publish(new StartNewPlayerTurnNotification(_model.CurrentPlayer));
         }

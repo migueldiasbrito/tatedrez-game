@@ -10,8 +10,13 @@ namespace Mdb.Tatedrez.Presentation.MainGameScreen.UiDisplays
 
         public void Populate(IPiece piece)
         {
-            pieceText.text = piece.PieceType.ToString();
-            pieceText.color = piece.Player == Player.White ? Color.white : Color.black;
+            if (piece != null)
+            {
+                pieceText.text = piece.PieceType.ToString();
+                pieceText.color = piece.Player == Player.White ? Color.white : Color.black;
+            }
+            else
+                pieceText.text = "";
         }
     }
 }

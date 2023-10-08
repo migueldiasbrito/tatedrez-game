@@ -10,6 +10,6 @@ namespace Mdb.Tatedrez.Data.Model
 
         bool CanMovePieceAt(int row, int column);
         bool CanPlacePieceAt(int row, int column);
-        bool CanMovePiece(int selectedRow, int selectedColumn, int row, int column);
+        IList<(int, int)> GetPossibleMovesForPieceAt(int row, int column);
     }
 }

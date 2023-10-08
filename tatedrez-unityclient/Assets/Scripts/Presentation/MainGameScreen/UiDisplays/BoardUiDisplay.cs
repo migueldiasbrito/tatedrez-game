@@ -3,6 +3,7 @@ using Mdb.Tatedrez.Services.Game;
 using Mdb.Tatedrez.Services.Game.Notifications;
 using Mdb.Tatedrez.Services.Notifications;
 using System;
+using System.Collections.Generic;
 using UnityEngine;
 
 namespace Mdb.Tatedrez.Presentation.MainGameScreen.UiDisplays
@@ -29,6 +30,7 @@ namespace Mdb.Tatedrez.Presentation.MainGameScreen.UiDisplays
 
             _notificationService = notificationService;
             _notificationService.Subscribe<PiecePlacedNotification>(OnPiecePlaced);
+            _notificationService.Subscribe<PieceMovedNotification>(OnPieceMoved);
 
             for (int row = 0; row < 3; row++)
                 for (int column = 0; column < 3; column++)
@@ -41,6 +43,22 @@ namespace Mdb.Tatedrez.Presentation.MainGameScreen.UiDisplays
             int column = notification.Column;
 
             cells[3 * row + column].Populate(_gameDataReader.Board[row][column]);
+
+            _currentPieceToPlace = null;
+        }
+
+        private void OnPieceMoved(PieceMovedNotification notification)
+        {
+            int row = notification.FromRow;
+            int column = notification.FromColumn;
+            cells[3 * row + column].Populate(_gameDataReader.Board[row][column]);
+
+            row = notification.ToRow;
+            column = notification.ToColumn;
+            cells[3 * row + column].Populate(_gameDataReader.Board[row][column]);
+
+            _currentRowSelected = -1;
+            _currentColumnSelected = -1;
         }
 
         public void SetMovablePiecesAsSelected()
@@ -77,8 +95,17 @@ namespace Mdb.Tatedrez.Presentation.MainGameScreen.UiDisplays
             if (_currentPieceToPlace != null)
             {
                 _gameService.TryPlacePieceAt(_currentPieceToPlace, boardCellUiDisplay.Row, boardCellUiDisplay.Column);
+                return;
             }
-            else if (boardCellUiDisplay.Piece != null)
+
+            if (_currentRowSelected >= 0 && _currentColumnSelected >= 0)
+            {
+                _gameService.TryMovePiece(_currentRowSelected, _currentColumnSelected, boardCellUiDisplay.Row,
+                    boardCellUiDisplay.Column);
+                return;
+            }
+            
+            if (boardCellUiDisplay.Piece != null)
             {
                 PreparePieceMove(boardCellUiDisplay.Row, boardCellUiDisplay.Column);
             }
@@ -97,13 +124,15 @@ namespace Mdb.Tatedrez.Presentation.MainGameScreen.UiDisplays
             _currentRowSelected = selectedRow;
             _currentColumnSelected = selectedColumn;
 
+            IList<(int, int)> movableCells = _gameDataReader.GetPossibleMovesForPieceAt(selectedRow, selectedColumn);
+
             for (int row = 0; row < 3; row++)
                 for (int column = 0; column < 3; column++)
-                {
-                    cells[3 * row + column].SetState(
-                        _gameDataReader.CanMovePiece(selectedRow, selectedColumn, row, column)
-                        ? PieceHolderState.Selectable : PieceHolderState.Unselectable);
-                }
+                    if (row == _currentRowSelected && column == _currentColumnSelected)
+                        cells[3 * row + column].SetState(PieceHolderState.Selected);
+                    else
+                        cells[3 * row + column].SetState(movableCells.Contains((row, column))
+                            ? PieceHolderState.Selectable : PieceHolderState.Unselectable);
         }
 
         private void OnDestroy()
@@ -111,6 +140,7 @@ namespace Mdb.Tatedrez.Presentation.MainGameScreen.UiDisplays
             if (_notificationService == null) return;
 
             _notificationService.Unsubscribe<PiecePlacedNotification>(OnPiecePlaced);
+            _notificationService.Unsubscribe<PieceMovedNotification>(OnPieceMoved);
         }
     }
 }
