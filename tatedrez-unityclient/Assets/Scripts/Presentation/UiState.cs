@@ -1,4 +1,4 @@
-namespace mdb.tatedrez.presentation
+namespace Mdb.Tatedrez.Presentation
 {
     public enum UiState
     {

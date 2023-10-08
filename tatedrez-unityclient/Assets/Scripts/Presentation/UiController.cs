@@ -1,12 +1,12 @@
 using UnityEngine;
 
-namespace mdb.tatedrez.presentation
+namespace Mdb.Tatedrez.Presentation
 {
     public class UiController : MonoBehaviour
     {
         protected UiSystem _uiSystem;
 
-        public void Register(UiSystem uiSystem)
+        public virtual void Initialize(UiSystem uiSystem)
         {
             _uiSystem = uiSystem;
         }

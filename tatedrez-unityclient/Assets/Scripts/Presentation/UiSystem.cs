@@ -1,7 +1,7 @@
 using AYellowpaper.SerializedCollections;
 using UnityEngine;
 
-namespace mdb.tatedrez.presentation
+namespace Mdb.Tatedrez.Presentation
 {
     public class UiSystem : MonoBehaviour
     {
@@ -15,7 +15,7 @@ namespace mdb.tatedrez.presentation
         {
             foreach ((UiState state, UiController controller) in _uiControllers)
             {
-                controller.Register(this);
+                controller.Initialize(this);
 
                 if (state == _initialState) continue;
                 controller.Hide();

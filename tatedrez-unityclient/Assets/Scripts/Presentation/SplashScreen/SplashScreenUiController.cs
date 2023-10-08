@@ -1,6 +1,6 @@
 using JetBrains.Annotations;
 
-namespace mdb.tatedrez.presentation.maingamescreen
+namespace Mdb.Tatedrez.Presentation.SplashScreen
 {
     public class SplashScreenUiController : UiController
     {
