@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -181,6 +182,68 @@ namespace Mdb.Tatedrez.Data.Model
                     if (CanMovePieceAt(row, column)) return true;
 
             return false;
+        }
+
+        public bool HasPlayerWon()
+        {
+            // check rows
+            for (int row = 0; row < 3; row++) {
+                bool rowWin = true;
+                for (int column = 0; column < 3; column++)
+                {
+                    Piece piece = BoardImplementation[row][column];
+                    if (piece == null || piece.Player != CurrentPlayer)
+                    {
+                        rowWin = false;
+                        break;
+                    }
+                }
+
+                if (rowWin) return true;
+            }
+
+            // check columns
+            for (int column = 0; column < 3; column++)
+            {
+                bool columnWin = true;
+                for (int row = 0; row < 3; row++)
+                {
+                    Piece piece = BoardImplementation[row][column];
+                    if (piece == null || piece.Player != CurrentPlayer)
+                    {
+                        columnWin = false;
+                        break;
+                    }
+                }
+
+                if (columnWin) return true;
+            }
+
+            // check diagonals
+            bool diagonalWin = true;
+            for (int row = 0, column = 0; row < 3 && column < 3; row++, column++)
+            {
+                Piece piece = BoardImplementation[row][column];
+                if (piece == null || piece.Player != CurrentPlayer)
+                {
+                    diagonalWin = false;
+                    break;
+                }
+            }
+            if (diagonalWin) return true;
+
+            diagonalWin = true;
+            for (int row = 0, column = 2; row < 3 && column >= 0; row++, column--)
+            {
+                Piece piece = BoardImplementation[row][column];
+                if (piece == null || piece.Player != CurrentPlayer)
+                {
+                    diagonalWin = false;
+                    break;
+                }
+            }
+
+            return diagonalWin;
         }
     }
 }

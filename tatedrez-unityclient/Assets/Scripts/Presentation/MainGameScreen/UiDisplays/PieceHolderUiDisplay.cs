@@ -26,13 +26,13 @@ namespace Mdb.Tatedrez.Presentation.MainGameScreen.UiDisplays
             switch (state)
             {
                 case PieceHolderState.Unselectable:
-                    _image.color = new Color(0.7843137f, 0.7843137f, 0.7843137f, 0.5019608f);
+                    _image.color = new Color(0.6078431f, 0.6078431f, 0.6078431f, 0.5019608f);
                     break;
                 case PieceHolderState.Selectable:
-                    _image.color = new Color(0.9607843f, 0.9607843f, 0.9607843f);
+                    _image.color = new Color(0.7843137f, 0.7843137f, 0.7843137f);
                     break;
                 case PieceHolderState.Selected:
-                    _image.color = new Color(0.7843137f, 0.7843137f, 0.7843137f);
+                    _image.color = new Color(0.6078431f, 0.6078431f, 0.6078431f);
                     break;
             }
         }

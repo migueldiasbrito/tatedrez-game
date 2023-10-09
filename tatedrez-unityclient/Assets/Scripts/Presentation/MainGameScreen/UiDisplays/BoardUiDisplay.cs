@@ -61,6 +61,12 @@ namespace Mdb.Tatedrez.Presentation.MainGameScreen.UiDisplays
             _currentColumnSelected = -1;
         }
 
+        public void Clear()
+        {
+            foreach (BoardCellUiDisplay cell in cells)
+                cell.Populate(null);
+        }
+
         public void SetMovablePiecesAsSelected()
         {
             for (int row = 0; row < 3; row++)

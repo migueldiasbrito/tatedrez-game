@@ -68,7 +68,11 @@ namespace Mdb.Tatedrez.Services.Game
 
         private void EndPlay()
         {
-            // TODO Check victory condition
+            if (_model.HasPlayerWon())
+            {
+                _notificationService.Publish(new PlayerWonNotification());
+                return;
+            }
 
 
             Player currentPlayer = _model.CurrentPlayer;
